@@ -1,0 +1,83 @@
+package binarySearch;
+
+/* Binary search je nacin kojim mozemo da proverimo da li je neka odredjena vrednost prisutna
+ * unutar sortiranog niza. Ovo je prva kljucna razlika u odnosu na linear search, 
+ * niz mora da bude sortiran! Dakle, ako niz nije sortiran, prvo moramo da ga sortiramo pa onda 
+ * da izvrsimo binary search za nekim elementom u njemu.
+ * 
+ * Binary search radi tako sto prvo proveravamo element u samom centru niza, dakle ne pocinjemo od 
+ * prvog elementa, nego iz sredine niza. Onda uzimamo taj sredisnji element i uporedjujemo ga
+ * sa elementom koji trazimo. Ako postoji poklapanje, nasa pretraga je zavrsena, a ako nije 
+ * zavisno od toga da li je trazeni element manji ili veci od onog sredisnjeg idemo u levo ili desno 
+ * (ka vecim ili manjim elementima niza) -> to je razlog zasto niz mora da bude sortiran. 
+ * 
+ * U sledecem koraku, jednu stranu niza zanemarujemo, posto smo utvrdili da su ti elementi manji/veci od 
+ * trazenog i oni nas vise ne zanimaju -> ova odlika je zasluzna za brzinu koju ova vrsta pretrage ima. 
+ * U ovom koraku opet gledamo koji je element na polovini tog niza i uporedjujemo ga sa elementom koji trazimo. 
+ * Dakle ceo postupak se ponavlja, ali ovaj put samo na polovini niza. Opet to uporedjivanje moze da 
+ * pronadje trazeni element ili da nam kaze da je trazeni element manji ili veci od sredisnjeg. U svakom
+ * sledecem ponavljanju, niz za pretragu se prepolovljuje u velicini i imamo sve manji i manji niz koji
+ * pretrazujemo. Ponavljamo postupak dok ne dodje do poklapanja i kao konacni rezultat dobijamo 
+ * index(polozaj) tog elementa u nizu  
+ * 
+ * Kada se pretrazuje niz za element koji ne postoji u njemu, kao povratnu vrednost vracamo -1, posto
+ * se ocekuje da se vrati broj indexa elementa -> -1 nije validan indeks niza, na taj nacin kazemo da 
+ * nismo mogli da pronadjemo element */
+
+public class Main {
+
+	public static void main(String[] args) {
+		// imacemo dve metode: jednu za sortiranje i jednu za binary search
+		int[] niz = {2, 5, 15, 3, 19, 16, 14, 17, 20, 8, 9, 7, 4};
+		stampaj(niz);
+		// prvo sortiramo niz
+		sort(niz);
+		System.out.println("Niz nakon sortiranja:");
+		stampaj(niz);
+		
+		System.out.println();
+		binarySearch(niz, 8);
+		
+		
+	}
+	private static int binarySearch(int[] niz, int broj) {
+		// uvescemo dva markera, koji ce da nam oznacavaju pocetak i kraj niza koji pretrazujemo
+		int start = 0;				// pocetak pretrage
+		int end = niz.length - 1;	// kraj pretrage
+		
+		while(start <= end) {
+			int middleIndex = (start + end) / 2;	// indeks sredisnjeg elementa
+			int middleNumber = niz[middleIndex];	// sredisnji element
+			
+			if(middleNumber == broj) {				// pronasli smo element
+				return middleIndex;
+			}
+			if(middleNumber > broj) {				// trazeni broj je manji, END pomeramo u levo od srednjeg
+				end = middleIndex - 1;
+			}else {
+				start = middleIndex + 1;			// trazeni broj je veci, pocetni indeks pomeramo u desno
+			}
+		}
+		return -1;
+	}
+	// metoda koja sortira niz
+	private static void sort(int[] niz) {
+		for (int i = 0; i < niz.length - 1; i++) {
+			int min = i; 					// uzimamo da je ovo najmanji element
+			for (int j = i + 1; j < niz.length; j++) {
+				if (niz[min] > niz[j]) {
+					min = j;
+				}
+			}
+			// menjamo mesta elementima
+			int temp = niz[i];
+			niz[i] = niz[min];
+			niz[min] = temp;
+		}
+	}
+	private static void stampaj(int[] niz) {
+		for(int i : niz)
+			System.out.print(i + " ");
+	}
+
+}
